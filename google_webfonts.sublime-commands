@@ -1,0 +1,4 @@
+[
+    { "caption": "Google Webfonts: Add Font", "command": "fetch_fonts" },
+    { "caption": "Google Webfonts: Merge fonts", "command": "merge_fonts"}
+]
