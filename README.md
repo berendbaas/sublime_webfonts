@@ -22,6 +22,7 @@ MENU ENTRIES
 ============
 
 Google webfonts: Add Font
+
 Google webfonts: Settings
 
 
@@ -29,5 +30,6 @@ TO-DO
 =====
 
 MERGE COMMAND: combines multiple link files to google fonts into a single file to minimize http requests, will be called automatically after each Add Font
+
 MINIMIZE COMMAND: removes all unused fonts from the link sheet to minimize web traffic.
 code cleanup.
