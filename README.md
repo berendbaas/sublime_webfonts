@@ -21,15 +21,15 @@ This command fetches all the available fonts and lists them in the quick panel. 
 MENU ENTRIES
 ============
 
-Google webfonts: Add Font
+Google Webfonts: Add Font
+Google Webfonts: Merge Fonts
 
-Google webfonts: Settings
 
 
 TO-DO
 =====
 
-MERGE COMMAND: combines multiple link files to google fonts into a single file to minimize http requests, will be called automatically after each Add Font
+MERGE COMMAND: combines multiple link files to google fonts into a single file to minimize http requests, will be called automatically after each Add Font. DONE, but took the quick fix, it doesn't check for multiple weights of the same font-family, see latest update notes.
 
 MINIMIZE COMMAND: removes all unused fonts from the link sheet to minimize web traffic.
 code cleanup.
