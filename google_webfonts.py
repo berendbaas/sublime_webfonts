@@ -6,19 +6,39 @@ style_url = 'http://fonts.googleapis.com/css?family='
 
 class merge_fontsCommand(sublime_plugin.TextCommand):
 
-  def run(self, edit):
+	def run(self, edit):
 		window = sublime.active_window()
 		self.tags = self.find_tags()
-		print self.tags
+		print self.tags # DEBUG
 
 	def find_tags(self):
 		"""
 		Finds the link tags inside the <head> that reference fonts.googleapis.com
 		"""
-		linklist = []
-		regex = ''
-		sublime.View.find_all(regex, sublime.IGNORECASE, linklist)
-		pass
+		regfull = '<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css\?family=.*/>'
+		regpart = '(?<=<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css\?family=).*(?=")'
+		
+		linklist = self.view.find_all(regfull)
+		linkparts = self.view.find_all(regpart)
+		startpos = linkparts[0].end()
+
+		if len(linklist) <= 1:
+			return
+
+		linklist.reverse()
+		edit = self.view.begin_edit()
+		fontlist = []
+		for f in linkparts:
+			fontlist.append(self.view.substr(f))
+
+		for link in linklist[:-1]:
+			self.view.erase(edit, link)
+
+		addstring = '|' + '|'.join(fontlist[1:])
+		self.view.insert(edit, startpos, addstring)
+		
+		self.view.end_edit(edit)
+		return
 
 	def find_fonts(self, tags):
 		"""
@@ -33,6 +53,8 @@ class merge_fontsCommand(sublime_plugin.TextCommand):
 		"""
 		pass
 
+class add_effectCommand(sublime_plugin.TextCommand):
+	pass
 
 class fetch_fontsCommand(sublime_plugin.TextCommand):
 
@@ -45,10 +67,9 @@ class fetch_fontsCommand(sublime_plugin.TextCommand):
 		self.load_settings()
 		window = sublime.active_window()
 		thread = fetchfontsApiCall(window, self.settings)
-		addfont = insertfont()
 		thread.start()
 		self.handle_thread(thread)
-
+		
 	def handle_thread(self, thread, i=0, dir=1):
 		keep_alive = False
 		if thread.is_alive():
@@ -87,8 +108,6 @@ class fetch_fontsCommand(sublime_plugin.TextCommand):
 		edit = self.view.begin_edit()
 		self.view.insert(edit, sel, line)
 		self.view.end_edit(edit)
-
-
 
 
 
