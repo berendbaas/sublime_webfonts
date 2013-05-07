@@ -37,6 +37,8 @@ class merge_fontsCommand(sublime_plugin.TextCommand):
 		addstring = '|' + '|'.join(fontlist[1:])
 		self.view.insert(edit, startpos, addstring)
 		
+		self.view.set_status('merge_fonts', 'Merged %s fonts' % (len(linklist)))
+		
 		self.view.end_edit(edit)
 		return
 
@@ -53,8 +55,39 @@ class merge_fontsCommand(sublime_plugin.TextCommand):
 		"""
 		pass
 
+
+
+
 class add_effectCommand(sublime_plugin.TextCommand):
-	pass
+	def run(self, edit):
+		self.effects = self.load_effects()
+		self.makelist(self.effects)
+		pass
+
+	def load_effects(self):
+		self.effects_filename = 'font-effects.json'
+		self.effects_file = open(self.effects_filename, 'r')
+		effects = json.load(self.effects_file)
+		return effects
+
+	def makelist(self, effects):
+		effectslist = []
+		for effect in effects:
+			effectslist.append([effect[0], 'Effect class: ' + effect[1]])
+
+		window = sublime.active_window()
+		window.show_quick_panel(effectslist, self.insert)	
+		pass
+
+	def insert(self, picked):
+		if picked == -1:
+			return
+
+		self.effects[picked]
+		print picked
+
+
+
 
 class fetch_fontsCommand(sublime_plugin.TextCommand):
 
@@ -66,7 +99,7 @@ class fetch_fontsCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		self.load_settings()
 		window = sublime.active_window()
-		thread = fetchfontsApiCall(window, self.settings)
+		thread = fetchfontsApiCall(self.settings)
 		thread.start()
 		self.handle_thread(thread)
 		
@@ -116,8 +149,8 @@ class fetchfontsApiCall(threading.Thread):
 	Class that functions as a thread. Is called for the fetching of the Webfonts list.
 	"""
 
-	def __init__(self, window, settings): 
-		self.window = window
+	def __init__(self, settings): 
+		# self.window = window
 		self.settings = settings
 		self.API_key = self.settings.get('API_key', None)
 		self.script = self.settings.get('script', 'latin')
